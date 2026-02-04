@@ -7,6 +7,7 @@ create_tables()
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+
 def get_password_hash(password: str):
     password = str(password)
     if len(password) > 72:
