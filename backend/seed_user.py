@@ -1,5 +1,5 @@
-from backend.database import SessionLocal, create_tables
-from backend.models import User
+from database import SessionLocal, create_tables
+from models import User
 from passlib.context import CryptContext
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -12,11 +12,11 @@ create_tables()
 
 db = SessionLocal()
 
-# Delete any existing broken admin user
+# Remove old admin if exists
 db.query(User).filter(User.username == "admin").delete()
 db.commit()
 
-# Create fresh admin user
+# Create fresh admin
 user = User(
     username="admin",
     email="admin@example.com",
