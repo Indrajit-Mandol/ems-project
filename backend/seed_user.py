@@ -1,24 +1,32 @@
-from database import SessionLocal
-from models import User
-from routes.auth import get_password_hash
+from backend.database import SessionLocal, create_tables
+from backend.models import User
+from passlib.context import CryptContext
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+def get_password_hash(password):
+    return pwd_context.hash(password)
+
+# Ensure tables exist
+create_tables()
 
 db = SessionLocal()
 
-existing = db.query(User).filter(User.username == "admin").first()
+# Delete any existing broken admin user
+db.query(User).filter(User.username == "admin").delete()
+db.commit()
 
-if not existing:
-    user = User(
-        username="admin",
-        email="admin@example.com",
-        hashed_password=get_password_hash("admin"),
-        role="admin",
-        is_active=True
-    )
+# Create fresh admin user
+user = User(
+    username="admin",
+    email="admin@example.com",
+    hashed_password=get_password_hash("admin"),
+    role="admin",
+    is_active=True
+)
 
-    db.add(user)
-    db.commit()
-    print("Admin user created!")
-else:
-    print("Admin user already exists!")
-
+db.add(user)
+db.commit()
 db.close()
+
+print("Fresh Admin user created successfully!")
