@@ -1,17 +1,21 @@
-from database import SessionLocal, engine
-from models import User, Base
+from database import SessionLocal, create_tables
+from models import User
 from passlib.context import CryptContext
 
-# CREATE TABLES FIRST (THIS IS THE KEY FIX)
-Base.metadata.create_all(bind=engine)
+# Ensure tables exist FIRST
+create_tables()
 
-pwd_context = CryptContext(schemes=["sha256_crypt"], deprecated="auto")
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def get_password_hash(password: str):
+    password = str(password)
+    if len(password) > 72:
+        password = password[:72]
     return pwd_context.hash(password)
 
 db = SessionLocal()
 
+# Check if admin already exists
 existing = db.query(User).filter(User.username == "admin").first()
 
 if existing:
@@ -24,6 +28,7 @@ else:
         role="admin",
         is_active=True
     )
+
     db.add(user)
     db.commit()
     print("Admin user created!")
