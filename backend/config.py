@@ -20,7 +20,8 @@ class Settings(BaseSettings):
     ALLOWED_ORIGINS: List[str] = [
         "http://localhost:3000",
         "http://localhost:5173",
-        "https://empprojec.netlify.app"
+        "https://empprojec.netlify.app",
+        "https://www.empprojec.netlify.app"
     ]
     
     class Config:
