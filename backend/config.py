@@ -1,5 +1,7 @@
+# backend/config.py
 from pydantic_settings import BaseSettings
 from functools import lru_cache
+from typing import List
 
 class Settings(BaseSettings):
     # App Settings
@@ -15,7 +17,11 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     
     # CORS Settings
-    ALLOWED_ORIGINS: list = ["http://localhost:3000", "http://localhost:5173"]
+    ALLOWED_ORIGINS: List[str] = [
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "https://empprojec.netlify.app"
+    ]
     
     class Config:
         env_file = ".env"
