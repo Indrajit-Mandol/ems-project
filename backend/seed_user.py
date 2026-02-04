@@ -1,27 +1,12 @@
-from database import SessionLocal, create_tables
+from database import SessionLocal
 from models import User
-from passlib.context import CryptContext
-
-# Ensure tables exist FIRST
-create_tables()
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-
-def get_password_hash(password: str):
-    password = str(password)
-    if len(password) > 72:
-        password = password[:72]
-    return pwd_context.hash(password)
+from routes.auth import get_password_hash
 
 db = SessionLocal()
 
-# Check if admin already exists
 existing = db.query(User).filter(User.username == "admin").first()
 
-if existing:
-    print("Admin user already exists!")
-else:
+if not existing:
     user = User(
         username="admin",
         email="admin@example.com",
@@ -33,5 +18,7 @@ else:
     db.add(user)
     db.commit()
     print("Admin user created!")
+else:
+    print("Admin user already exists!")
 
 db.close()
